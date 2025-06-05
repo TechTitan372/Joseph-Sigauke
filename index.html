@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="IMG_20240420_122117.jpg" /> <!-- Ensure this path is correct -->
+  <title>CyberCore Nexus | TechTitan372</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #00BFFF; /* Deep Sky Blue */
+      --secondary-color: #FF00FF; /* Magenta */
+      --accent-color: #00FFFF; /* Cyan */
+      --glow-color: var(--primary-color);
+      --text-color: #E0E0E0;
+      --bg-color: #05080a; /* Very dark blue/black */
+      --panel-bg: rgba(10, 20, 30, 0.85);
+      --panel-border: rgba(0, 191, 255, 0.5);
+      --font-main: 'Roboto Mono', monospace;
+      --font-headings: 'Orbitron', sans-serif;
+    }
+
+    /* Global Resets and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      opacity: 0.15; /* More subtle matrix */
+    }
+
+    .scanline-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(0, 191, 255, 0.02), rgba(0, 255, 255, 0.01), rgba(255, 0, 255, 0.02));
+      background-size: 100% 3px, 4px 100%;
+      z-index: -1;
+      pointer-events: none;
+      animation: flicker 0.1s infinite alternate;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-headings);
+      color: var(--primary-color);
+      text-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color), 0 0 15px rgba(0, 191, 255, 0.7);
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    p {
+      margin-bottom: 1.5em;
+      color: #b0c4de; /* Lighter steel blue for paragraph text */
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    a:hover, a:focus {
+      color: #FFFFFF;
+      text-shadow: 0 0 8px var(--accent-color), 0 0 15px var(--accent-color);
+    }
+
+    /* Header */
+    .header-advanced {
+      background: linear-gradient(135deg, rgba(10, 20, 30, 0.7) 0%, rgba(0,0,0,0.9) 100%);
+      padding: 15px 30px;
+      border-bottom: 2px solid var(--panel-border);
+      box-shadow: 0 2px 20px rgba(0, 191, 255, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .open-btn {
+      font-size: 28px;
+      background: transparent;
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 4px;
+      text-shadow: 0 0 5px var(--accent-color);
+      transition: all 0.3s ease;
+    }
+    .open-btn:hover {
+      background-color: var(--accent-color);
+      color: var(--bg-color);
+      box-shadow: 0 0 15px var(--accent-color);
+    }
+
+    .site-title {
+      font-size: 2.2em;
+      color: var(--primary-color);
+      text-shadow: 0 0 8px var(--primary-color), 0 0 15px var(--primary-color), 0 0 25px var(--accent-color);
+      animation: textFlickerNeon 4s infinite alternate;
+      margin: 0; /* Reset margin for h1/h2 */
+    }
+    .site-title marquee {
+        color: inherit; /* Inherit color from parent */
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: rgba(5, 8, 10, 0.7);
+      padding: 15px 0;
+      border-bottom: 1px solid var(--panel-border);
+      box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2);
+      margin-bottom: 40px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      padding: 0;
+    }
+
+    nav ul li {
+      margin: 0 10px; /* Slightly reduced margin */
+    }
+
+    nav ul li a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 400; /* Lighter weight for nav links */
+      padding: 10px 20px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 1px;
+    }
+    nav ul li a::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background-color: var(--accent-color);
+        transition: left 0.3s ease;
+    }
+    nav ul li a:hover::before, nav ul li a.active::before {
+        left: 0;
+    }
+    nav ul li a:hover, nav ul li a.active {
+      color: var(--accent-color);
+      text-shadow: 0 0 8px var(--accent-color);
+      background-color: rgba(0, 191, 255, 0.1);
+    }
+
+    /* Drawer Menu */
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 280px;
+      height: 100%;
+      background-color: rgba(5, 8, 10, 0.95); /* Darker, more opaque */
+      padding-top: 20px;
+      transition: left 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      z-index: 1001; /* Above header */
+      border-right: 2px solid var(--accent-color);
+      box-shadow: 5px 0 25px rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .drawer.open {
+        left: 0;
+    }
+
+    .drawer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--panel-border);
+    }
+
+    .drawer-title {
+      color: var(--primary-color);
+      font-size: 1.6em;
+      margin-bottom: 0;
+    }
+
+    .close-btn {
+        font-size: 28px;
+        background: none;
+        border: none;
+        color: var(--accent-color);
+        cursor: pointer;
+    }
+    .close-btn:hover {
+        color: #fff;
+        text-shadow: 0 0 5px var(--accent-color);
+    }
+
+    .drawer ul {
+      list-style: none;
+      padding: 10px 0;
+    }
+
+    .drawer ul li a {
+      color: var(--text-color);
+      text-decoration: none;
+      display: block;
+      padding: 15px 25px;
+      border-bottom: 1px solid rgba(0, 191, 255, 0.1);
+      font-size: 1.1em;
+      transition: background-color 0.3s, color 0.3s, padding-left 0.3s;
+    }
+
+    .drawer ul li a:hover {
+      background-color: var(--accent-color);
+      color: var(--bg-color);
+      padding-left: 30px;
+      text-shadow: none;
+    }
+    .drawer ul li a::before { /* Icon placeholder */
+        content: "> ";
+        color: var(--primary-color);
+        margin-right: 10px;
+    }
+    .drawer ul li a:hover::before {
+        color: var(--bg-color);
+    }
+
+
+    /* Hero Section */
+    .hero {
+      padding: 100px 20px;
+      text-align: center;
+      background: 
+        linear-gradient(rgba(5, 8, 10, 0.8), rgba(5, 8, 10, 0.95)),
+        url('your-cyber-background.jpg') center center/cover no-repeat; /* Add a fitting background image URL */
+      background-color: var(--darker-bg); /* Fallback */
+      margin: 0 20px 40px 20px;
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 0 30px rgba(0, 191, 255, 0.2), 0 0 50px rgba(0, 191, 255, 0.1) inset;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    
+    .hero::before, .hero::after { /* Animated corner elements */
+        content: '';
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        border: 2px solid var(--accent-color);
+        animation: pulseCorner 2s infinite alternate;
+    }
+    .hero::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+    .hero::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+
+    .hero h1 {
+      font-size: 3.8em; /* Larger */
+      margin-bottom: 0.2em;
+      color: #fff; /* Brighter for hero title */
+      text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--accent-color);
+      position: relative;
+    }
+    .hero h1 .typewriter-cursor {
+        display: inline-block;
+        background-color: var(--accent-color);
+        width: 4px; /* Thicker cursor */
+        height: 1.1em;
+        animation: blinkCursor 0.6s infinite;
+        margin-left: 8px;
+        vertical-align: text-bottom;
+        box-shadow: 0 0 5px var(--accent-color);
+    }
+
+    .hero .subtitle {
+        font-family: var(--font-main);
+        font-size: 1.5em;
+        color: var(--primary-color);
+        text-shadow: 0 0 5px var(--primary-color);
+        margin-top: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        opacity: 0;
+        animation: fadeInFromBottom 1s 1s forwards; /* Delay after typewriter */
+    }
+
+
+    /* Content Sections */
+    .content-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 0 20px;
+    }
+
+    .content-card {
+      background-color: var(--panel-bg);
+      padding: 30px;
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      box-shadow: 0 0 15px rgba(0,191,255,0.1), 0 0 5px rgba(0,191,255,0.1) inset;
+      position: relative;
+      overflow: hidden; /* For pseudo-elements */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .content-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 0 25px rgba(0,191,255,0.3), 0 0 10px rgba(0,191,255,0.2) inset;
+    }
+
+    .content-card::before { /* Top-left corner accent */
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 15px 15px 0 0;
+        border-color: var(--accent-color) transparent transparent transparent;
+        transition: all 0.3s ease;
+    }
+    .content-card:hover::before {
+        border-width: 20px 20px 0 0;
+    }
+
+
+    .content-card h2 {
+      border-bottom: 1px solid var(--primary-color);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      position: relative;
+    }
+    .content-card h2 .glitch-text {
+        position: relative;
+        display: inline-block; /* Important for glitch effect */
+    }
+    .content-card h2 .glitch-text::before,
+    .content-card h2 .glitch-text::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--panel-bg);
+        overflow: hidden;
+        clip-path: inset(0); /* Ensure it covers text initially */
+    }
+    .content-card h2 .glitch-text::before {
+        left: 2px;
+        text-shadow: -1px 0 var(--secondary-color);
+        animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+    }
+    .content-card h2 .glitch-text::after {
+        left: -2px;
+        text-shadow: 1px 0 var(--accent-color);
+        animation: glitch-anim-2 3.5s infinite linear alternate-reverse;
+    }
+
+    /* Footer Section */
+    footer {
+      background: linear-gradient(to top, rgba(5, 8, 10, 0.9), rgba(10, 20, 30, 0.7));
+      color: #777;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 50px;
+      border-top: 3px double var(--panel-border);
+      box-shadow: 0 -5px 25px rgba(0, 191, 255, 0.2);
+    }
+
+    .footer-content p {
+      margin: 10px 0;
+      font-size: 0.95em;
+    }
+
+    .footer-content a {
+      display: inline-block;
+      margin: 10px 15px;
+      padding: 8px 15px;
+      border: 1px solid var(--primary-color);
+      border-radius: 4px;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .footer-content a:hover, .footer-content a:focus {
+      background-color: var(--primary-color);
+      color: var(--bg-color);
+      box-shadow: 0 0 10px var(--primary-color);
+      transform: translateY(-2px);
+    }
+    
+    /* Terminal Section Styling */
+    .terminal {
+        background-color: rgba(0, 5, 10, 0.9); /* Darker, more focused terminal */
+        border: 1px solid var(--accent-color);
+        box-shadow: 0 0 15px var(--accent-color), 0 0 5px var(--accent-color) inset;
+        padding: 20px;
+        margin-top: 30px;
+        border-radius: 5px;
+        font-family: 'Roboto Mono', monospace; /* Consistent monospaced font */
+        color: var(--accent-color);
+        white-space: pre-wrap;
+        overflow-x: auto;
+    }
+    .terminal-header {
+        background-color: rgba(0, 255, 255, 0.1);
+        padding: 8px 15px;
+        border-bottom: 1px solid var(--accent-color);
+        color: #fff;
+        font-weight: bold;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .terminal-header::after { /* Blinking dot */
+        content: '●';
+        color: var(--secondary-color);
+        animation: blinkStatus 1.5s infinite;
+        font-size: 1.2em;
+    }
+    .terminal-content {
+        padding-top: 15px;
+        min-height: 150px;
+    }
+    .terminal-prompt {
+        color: var(--primary-color);
+        font-weight: bold;
+    }
+    .terminal-input {
+        background: transparent;
+        border: none;
+        color: var(--accent-color);
+        font-family: inherit;
+        font-size: inherit;
+        width: calc(100% - 150px); /* Adjust based on prompt length */
+        outline: none;
+    }
+    .terminal-cursor {
+        display: inline-block;
+        background-color: var(--accent-color);
+        width: 8px;
+        height: 1em;
+        animation: blinkCursor 0.7s infinite;
+        vertical-align: text-bottom;
+    }
+
+    /* Keyframe Animations */
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes textFlickerNeon {
+      0%, 100% {
+        text-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color), 0 0 15px var(--accent-color), 0 0 20px var(--accent-color), 0 0 25px var(--accent-color), 0 0 30px var(--accent-color);
+      }
+      50% {
+        text-shadow: 0 0 3px var(--primary-color), 0 0 8px var(--primary-color), 0 0 12px var(--accent-color);
+      }
+    }
+    
+    @keyframes pulseCorner {
+        0% { border-color: var(--accent-color); opacity: 0.7; }
+        50% { border-color: var(--primary-color); opacity: 1; }
+        100% { border-color: var(--accent-color); opacity: 0.7; }
+    }
+
+    @keyframes blinkCursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    
+    @keyframes blinkStatus {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    @keyframes fadeInFromBottom {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes glitch-anim-1 {
+      0% { clip-path: inset(10% 0 80% 0); transform: translateX(-2px); }
+      20% { clip-path: inset(70% 0 5% 0); transform: translateX(1px); }
+      40% { clip-path: inset(35% 0 50% 0); transform: translateX(-1px); }
+      60% { clip-path: inset(85% 0 2% 0); transform: translateX(2px); }
+      80% { clip-path: inset(20% 0 65% 0); transform: translateX(-2px); }
+      100% { clip-path: inset(55% 0 30% 0); transform: translateX(1px); }
+    }
+
+    @keyframes glitch-anim-2 {
+      0% { clip-path: inset(5% 0 90% 0); transform: translateX(1px); }
+      20% { clip-path: inset(80% 0 10% 0); transform: translateX(-2px); }
+      40% { clip-path: inset(25% 0 60% 0); transform: translateX(2px); }
+      60% { clip-path: inset(65% 0 15% 0); transform: translateX(-1px); }
+      80% { clip-path: inset(40% 0 40% 0); transform: translateX(1px); }
+      100% { clip-path: inset(75% 0 5% 0); transform: translateX(-2px); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .header-advanced {
+        padding: 10px 15px;
+      }
+      .site-title {
+        font-size: 1.8em;
+      }
+      .open-btn {
+        font-size: 24px;
+        padding: 6px 10px;
+      }
+      nav ul {
+        flex-direction: column;
+        align-items: center;
+      }
+      nav ul li {
+        margin: 8px 0;
+      }
+      nav ul li a {
+        padding: 8px 15px;
+      }
+      .hero h1 {
+        font-size: 2.8em;
+      }
+      .hero .subtitle {
+        font-size: 1.2em;
+      }
+      .content-grid {
+        grid-template-columns: 1fr; /* Stack cards on mobile */
+        padding: 0 10px;
+      }
+      .content-card {
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .terminal-input {
+        width: calc(100% - 100px); /* Adjust for smaller screens */
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+  <div class="scanline-overlay"></div>
+
+  <!-- Drawer -->
+  <div id="drawer" class="drawer">
+    <div class="drawer-header">
+        <h2 class="drawer-title">TechTitanOS Menu</h2>
+        <button class="close-btn" onclick="toggleDrawer()">×</button>
+    </div>
+    <ul class="drawer-list">
+      <li><a href="https://wa.me/ais/2134954473596957?s=5" onclick="toggleDrawer()">TechTitan WhatsApp AI</a></li>
+      <li><a href="Jozman.html" onclick="toggleDrawer()">Friends And family</a></li>
+      <li><a href="#" onclick="toggleDrawer()">Resource Downloader</a></li>
+       <li><a href="myProjects.html" onclick="toggleDrawer()">Projects</a></li>
+      <li><a href="index3.html" onclick="toggleDrawer()">Another Web</a></li>
+    </ul>
+  </div>
+
+<header class="header-advanced">
+  <div class="header-container">
+    <button class="open-btn" onclick="toggleDrawer()">☰</button>
+    <h1 class="site-title"><marquee behavior="alternate" scrollamount="2" scrolldelay="80">♥ Tech Titan ♥</marquee></h1>
+    <!-- Optional: Small icon or logo here -->
+  </div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#home" class="active">HomeBase</a></li>
+    <li><a href="#about">Intel Brief</a></li>
+    <li><a href="#services">Operations</a></li>
+    <li><a href="https://github.com/TechTitan372" target="_blank">GitHub Repo</a></li>
+    <li><a href="#contact">Comms Link</a></li>
+    <li><a href="index3.html">Project Archives</a></li>
+  </ul>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <h1 id="hero-title-main"></h1>
+  <p class="subtitle" id="hero-subtitle">TECHTITAN // Digital Architect</p>
+</section>
+
+<div class="content-grid">
+  <!-- Home Section -->
+  <article class="content-card" id="home">
+    <h2 data-text="[System_Online]">
+        <span class="glitch-text" data-text="[System_Online]">[System_Online]</span>
+    </h2>
+    <p>
+      Connection secured. Welcome, operative. I am Joseph Sigauke, known in the digital ether as <strong>TechTitan</strong>. You've accessed a restricted node. My primary function: architecting digital realities. My tools: <strong>HTML, CSS, JavaScript</strong>. My mission: to forge immersive web experiences that push boundaries.
+    </p>
+    <p>
+      I specialize in constructing resilient, adaptive frameworks and intuitive user interfaces, leveraging technologies like <strong>Bootstrap, Flutter, and Firebase</strong>. From clandestine landing pages to complex, full-stack deployments, each project is executed with surgical precision and strategic foresight.
+    </p>
+    <p>
+      Prepare for an expedition into the core of <strong>advanced web development, UI/UX engineering, and cybernetic innovation</strong>.
+    </p>
+  </article>
+
+  <!-- About Section -->
+  <article class="content-card" id="about">
+    <h2 data-text="[Joint_Ops:CyberCoder_//_TechTitan]">
+        <span class="glitch-text" data-text="[Joint_Ops:CyberCoder_//_TechTitan]">Joint Ops: CyberCoder // TechTitan</span>
+    </h2>
+    <p>
+      We are a synergistic unit of digital pioneers, engineering disruptive solutions for the next-gen web. Our directive: deploy high-fidelity websites that are both operationally superior and visually arresting.
+    </p>
+    <p>
+      We are the architects of the unseen, crafting applications that reshape the digital frontier. Consider us the ghost in your machine, the signal in the static.
+    </p>
+  </article>
+
+  <!-- What I Offer Section -->
+  <article class="content-card" id="services">
+    <h2 data-text="[Service_Protocols]">
+        <span class="glitch-text" data-text="[Service_Protocols]">Service Protocols</span>
+    </h2>
+    <p>
+      My operational parameters include the development of cutting-edge applications and the dissemination of ethical hacking methodologies (White Hat). I function as a freelance coder and a dedicated app developer, materializing custom digital tools from base algorithms. Pro-bono system diagnostics and threat neutralization services are available for compromised entities.
+    </p>
+    <p>
+      As a White Hat specialist, I offer consultation and training in advanced cybersecurity countermeasures (strictly for educational and defensive applications). Initiate secure comms for classified briefings.
+    </p>
+    <div class="terminal">
+        <div class="terminal-header">SYS_CONSOLE :: TechTitanOS v4.2</div>
+        <div class="terminal-content" id="terminalOutput">
+            <p>> Boot sequence initiated...</p>
+            <p>> Kernel loaded. Modules initializing...</p>
+            <p>> Network interface eth0: UP | IP: 10.0.2.15</p>
+            <p>> Security daemons active: [FireWallX] [IntrusionGuard]</p>
+            <p>> All systems nominal. Awaiting command...</p>
+            <p><span class="terminal-prompt">TechTitan@Nexus:~$&nbsp;</span><span id="terminal-command-input" contenteditable="true" spellcheck="false"></span><span class="terminal-cursor"></span></p>
+        </div>
+    </div>
+  </article>
+
+  <!-- Contact Section -->
+  <article class="content-card" id="contact">
+    <h2 data-text="[Secure_Channel]">
+        <span class="glitch-text" data-text="[Secure_Channel]">Secure Channel</span>
+    </h2>
+    <p>
+      Encrypted communication lines are open. Establish contact via designated WhatsApp protocols. Access to restricted data streams and group channels granted upon successful authentication.
+    </p>
+    <a href="#" class="button" style="margin-top: 20px; display: inline-block; background-color: var(--accent-color); color: var(--bg-color);">Access Network Intel</a>
+  </article>
+</div>
+  
+<!-- Footer Section -->
+<footer>
+  <div class="footer-content">
+    <p>
+      &copy; 2025 Joseph Sigauke // TechTitan Division. All Rights Reserved.
+    </p>
+    <p>
+      System Architecture & Design: Mutare, Zimbabwe Digital Nexus.
+    </p>
+    <p>
+     <a href="https://chat.whatsapp.com/FlSU3zllmXN5BSBxTq153F" target="_blank">Encrypted Comms Link</a> 
+     <a href="https://wa.me/263780298514" target="_blank">Direct Line: Unit TT372</a>
+     <a href="sigauke.html">Full Operative Dossier</a>
+    </p>
+  </div>
+  <p>
+    <marquee behavior="scroll" direction="left" scrollamount="3" scrolldelay="100" style="color: var(--secondary-color); font-size: 0.9em;">//:SESSION_TERMINATING...FLUSHING_CACHE...SECURE_LOGOUT_COMPLETE...GOODBYE_AGENT_77...://</marquee>
+  </p>
+</footer>
+
+<script>
+  // Drawer Toggle
+  const drawer = document.getElementById("drawer");
+  function toggleDrawer() {
+    drawer.classList.toggle("open");
+    document.body.classList.toggle('drawer-open-no-scroll'); // Optional: prevent body scroll when drawer is open
+  }
+
+  // Matrix Effect
+  const canvas = document.getElementById("matrixCanvas");
+  const ctx = canvas.getContext("2d");
+
+  function resizeCanvas() {
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    columns = canvas.width / fontSize;
+    drops = Array(Math.floor(columns)).fill(1).map(() => Math.random() * canvas.height); // Randomize initial drop positions
+  }
+  
+  let letters = "01"; // Binary for a more "digital rain" feel
+  const fontSize = 12; // Smaller for denser effect
+  let columns = canvas.width / fontSize;
+  let drops = [];
+
+  resizeCanvas(); // Initial call
+  window.addEventListener('resize', resizeCanvas);
+
+
+  for (let x = 0; x < columns; x++) {
+    drops[x] = Math.random() * canvas.height; // Start drops at random y positions
+  }
+
+  function drawMatrix() {
+    ctx.fillStyle = "rgba(5, 8, 10, 0.05)"; // Corresponds to --bg-color with alpha
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.fillStyle = "rgba(0, 255, 255, 0.7)"; // Cyan, slightly transparent
+    ctx.font = fontSize + "px 'Roboto Mono', monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters.charAt(Math.floor(Math.random() * letters.length));
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.985) { // Slower reset
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  let matrixInterval = setInterval(drawMatrix, 60); // Slightly slower for subtlety
+
+  // Touch Swipe to Close Drawer
+  let touchStartX = 0;
+  drawer.addEventListener("touchstart", (e) => {
+    touchStartX = e.touches[0].clientX;
+  });
+  
+  drawer.addEventListener("touchend", (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    if (drawer.classList.contains('open') && touchStartX - touchEndX > 70) { // Swipe left to close
+        toggleDrawer();
+    }
+    touchStartX = 0;
+  });
+
+  // Typewriter Effect for Hero Title
+  const heroTitleTextMain = "Joseph Sigauke";
+  const heroTitleElementMain = document.getElementById('hero-title-main');
+  let charIndexMain = 0;
+
+  function typeWriterMain() {
+    if (charIndexMain < heroTitleTextMain.length) {
+      heroTitleElementMain.innerHTML = heroTitleTextMain.substring(0, charIndexMain + 1) + '<span class="typewriter-cursor"></span>';
+      charIndexMain++;
+      setTimeout(typeWriterMain, 120); // Typing speed
+    } else {
+        heroTitleElementMain.innerHTML = heroTitleTextMain + '<span class="typewriter-cursor" style="animation: blinkCursor 0.6s infinite;"></span>';
+        // Trigger subtitle animation
+        document.getElementById('hero-subtitle').style.opacity = '1';
+    }
+  }
+  
+  // Active Nav Link highlighting
+  document.addEventListener("DOMContentLoaded", function() {
+    typeWriterMain(); // Start typewriter on load
+
+    const sections = document.querySelectorAll("section.hero, article.content-card");
+    const navLinks = document.querySelectorAll("nav ul li a");
+
+    const observerOptions = {
+        root: null, // relative to document viewport 
+        rootMargin: '0px',
+        threshold: 0.4 // 40% of the section is visible
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const id = entry.target.getAttribute('id');
+            const navLink = document.querySelector(`nav ul li a[href="#${id}"]`);
+            
+            if (entry.isIntersecting) {
+                navLinks.forEach(link => link.classList.remove('active'));
+                if (navLink) {
+                    navLink.classList.add('active');
+                }
+                entry.target.classList.add('in-view'); // For scroll animations
+            } else {
+                 if (navLink) {
+                    // navLink.classList.remove('active'); // Optional: remove active if not strictly one active
+                 }
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+    
+    // Initial active link for #home if visible
+    const homeLink = document.querySelector('nav ul li a[href="#home"]');
+    if (homeLink) { // Check if homeLink exists
+        const homeSection = document.getElementById('home');
+        if (homeSection) { // Check if homeSection exists
+            const rect = homeSection.getBoundingClientRect();
+            if (rect.top >= 0 && rect.top <= window.innerHeight / 2) {
+                 navLinks.forEach(link => link.classList.remove('active'));
+                 homeLink.classList.add('active');
+            }
+        }
+    }
+
+
+    // Simple Terminal Interaction
+    const terminalInput = document.getElementById('terminal-command-input');
+    const terminalOutput = document.getElementById('terminalOutput');
+    if(terminalInput && terminalOutput) {
+        terminalInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const command = this.innerText.trim();
+                const prompt = '<p><span class="terminal-prompt">TechTitan@Nexus:~$ </span>';
+                let outputText = `${prompt}${command}</p>`;
+                
+                if (command.toLowerCase() === 'help') {
+                    outputText += `<p>Available commands: <br>  status - Display system status.<br>  clear - Clear terminal output.<br>  whoami - Display user info.<br>  date - Show current date/time.</p>`;
+                } else if (command.toLowerCase() === 'status') {
+                    outputText += `<p>System Status: ALL SYSTEMS GREEN. UPLINK STABLE. THREAT LEVEL: MINIMAL.</p>`;
+                } else if (command.toLowerCase() === 'clear') {
+                    terminalOutput.innerHTML = `<p><span class="terminal-prompt">TechTitan@Nexus:~$&nbsp;</span><span id="terminal-command-input" contenteditable="true" spellcheck="false"></span><span class="terminal-cursor"></span></p>`;
+                    // Re-attach event listener to the new input field
+                    document.getElementById('terminal-command-input').addEventListener('keydown', arguments.callee);
+                    document.getElementById('terminal-command-input').focus();
+                    return;
+                } else if (command.toLowerCase() === 'whoami') {
+                    outputText += `<p>USER: Guest_Agent_77<br>Clearance: Level 2 (Restricted Access)</p>`;
+                } else if (command.toLowerCase() === 'date') {
+                    outputText += `<p>${new Date().toString()}</p>`;
+                } else if (command === '') {
+                    // Do nothing for empty command
+                }
+                 else {
+                    outputText += `<p>command not found: ${command}</p>`;
+                }
+                
+                this.innerText = ''; // Clear input
+                
+                // Insert new prompt and cursor before the output
+                const currentContent = terminalOutput.innerHTML;
+                // Remove the old input line
+                const lastPromptIndex = currentContent.lastIndexOf('<p><span class="terminal-prompt">');
+                terminalOutput.innerHTML = currentContent.substring(0, lastPromptIndex) + outputText + `<p><span class="terminal-prompt">TechTitan@Nexus:~$&nbsp;</span><span id="terminal-command-input" contenteditable="true" spellcheck="false"></span><span class="terminal-cursor"></span></p>`;
+                
+                // Re-attach event listener to the new input field
+                document.getElementById('terminal-command-input').addEventListener('keydown', arguments.callee);
+                document.getElementById('terminal-command-input').focus();
+
+                // Scroll to bottom
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+        });
+    }
+
+  });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A simple, modern website template with a red theme.">
+  <meta name="author" content="Joseph Sigauke">
+  <title>TechTitan372 Website - Red Edition</title>
+  <style>
+    /* Global Resets and Base Styles */
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease-in-out;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh; /* Use min-height for full viewport coverage */
+      background-color: #000000 !important; /* Black background as per original intent */
+      color: #FF3333; /* Primary red for text */
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      color: #FF3333; /* Primary red for headers */
+      text-shadow: 0 0 8px #FF0000, 0 0 12px #FF0000; /* Red glow */
+      margin-top: 0;
+    }
+
+    p {
+      margin-bottom: 1em;
+    }
+
+    a {
+      color: #FF6666; /* Lighter red for links */
+      text-decoration: none;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    a:hover, a:focus {
+      color: #FFFFFF; /* White on hover for contrast */
+      text-shadow: 0 0 10px #FF0000;
+    }
+
+    /* Header Section */
+    header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid #DD0000;
+      box-shadow: 0 0 15px #CC0000, 0 0 25px #CC0000;
+      margin: 20px; /* Added margin as per original section styling */
+    }
+
+    header h1 .glow-red {
+      font-size: 2.5em;
+      color: #FF4444;
+      animation: pulsateRedText 2s infinite alternate;
+    }
+
+    /* Marquee Styling */
+    marquee {
+      color: #FF6666;
+      font-weight: bold;
+    }
+
+    /* Navigation Section */
+    nav {
+      text-align: center;
+      padding: 15px 0;
+      margin: 0 20px 20px 20px; /* Match section margins */
+      border: 1px solid #DD0000;
+      box-shadow: 0 0 10px #CC0000, 0 0 20px #CC0000;
+      background-color: #110000; /* Slightly off-black for nav */
+    }
+
+    nav a {
+      margin: 0 15px;
+      padding: 8px 12px;
+      color: #FF7777;
+      font-size: 1.1em;
+      border-radius: 4px;
+      text-shadow: 0 0 5px #FF3333;
+    }
+
+    nav a:hover, nav a:focus {
+      background-color: #FF3333;
+      color: #000000;
+      text-shadow: none;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 60px 20px;
+      text-align: center;
+      background-color: #1A0000; /* Dark red tint for hero background */
+      margin: 20px; /* Added margin */
+      border: 1px solid #DD0000;
+      box-shadow: 0 0 15px #CC0000, 0 0 30px #CC0000, 0 0 45px #CC0000 inset;
+      animation: pulsateRedBorder 3s infinite alternate;
+    }
+
+    .hero h1 {
+      font-size: 2.8em;
+      margin-bottom: 0.2em;
+      color: #FF5555;
+      text-shadow: 0 0 10px #FF0000, 0 0 20px #FF0000, 0 0 30px #FF0000;
+    }
+    .hero h1 .star {
+        font-size: 1.5em;
+        color: #FF9999;
+        display: block; /* Make star take its own line if desired, or inline-block */
+        margin: 10px 0;
+    }
+    .hero h1 .title {
+        font-size: 1.8em; /* Slightly smaller than main name */
+        color: #FF7777;
+        display: block;
+    }
+
+
+    /* Content Sections */
+    .content {
+      margin: 20px;
+      padding: 30px;
+      border: 1px solid #DD0000; /* Darker red border */
+      box-shadow: 0 0 10px #CC0000, 0 0 20px #CC0000; /* Red glow */
+      text-shadow: 0 0 3px #AA0000; /* Subtle text glow for content */
+      background-color: #0A0000; /* Very dark red for content background */
+    }
+
+    .content:hover {
+      transform: scale(1.01); /* Subtle scale on hover */
+      box-shadow: 0 0 15px #FF0000, 0 0 30px #FF0000;
+    }
+
+    .content h1, .content h2 {
+      border-bottom: 2px solid #AA0000;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    /* Footer Section */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      margin: 20px;
+      border-top: 2px solid #DD0000;
+      box-shadow: 0 0 15px #CC0000, 0 0 25px #CC0000;
+      background-color: #110000;
+    }
+
+    .footer-content p {
+      margin: 10px 0;
+      font-size: 0.9em;
+    }
+
+    .footer-content a {
+      display: inline-block; /* Make links blocky for better click area */
+      margin: 5px 10px;
+      padding: 5px 10px;
+      border: 1px solid #AA0000;
+      border-radius: 4px;
+    }
+
+    .footer-content a:hover, .footer-content a:focus {
+      background-color: #FF3333;
+      color: #000000;
+      border-color: #FF3333;
+    }
+    
+    /* Keyframe Animations */
+    @keyframes pulsateRedText {
+      0% {
+        text-shadow: 0 0 8px #FF0000, 0 0 12px #FF0000;
+        color: #FF4444;
+      }
+      100% {
+        text-shadow: 0 0 12px #FF5500, 0 0 20px #FF5500; /* Slightly orange-red for pulse */
+        color: #FF6666;
+      }
+    }
+
+    @keyframes pulsateRedBorder {
+      0% {
+        border-color: #DD0000;
+        box-shadow: 0 0 15px #CC0000, 0 0 30px #CC0000, 0 0 45px #CC0000 inset;
+      }
+      100% {
+        border-color: #FF3333;
+        box-shadow: 0 0 20px #FF0000, 0 0 40px #FF0000, 0 0 60px #FF0000 inset;
+      }
+    }
+
+    /* Responsive adjustments (basic) */
+    @media (max-width: 768px) {
+      header h1 .glow-red {
+        font-size: 2em;
+      }
+      .hero h1 {
+        font-size: 2.2em;
+      }
+      nav a {
+        display: block; /* Stack nav links on smaller screens */
+        margin: 10px 0;
+      }
+      .content {
+        padding: 20px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header>
+    <h1><span class="glow-red"><marquee>TechTitan AKA Joseph Sigauke</marquee></span></h1>
+  </header>
+  
+  <!-- Nav Section -->
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>
+      TechTitan <br>
+      <span class="star">☆</span>
+      <span class="">Friends and Family</span>
+    </h1>
+  </div>
+
+  <!-- Home Section -->
+  <div class="content" id="home">
+    <h1>Cyber Coder</h1>
+    <p>
+      This is my mentor who coached me amd made me like Tech. He specializes in many Tech Chapters.
+    </p>
+  </div>
+  <div class="content" id="home">
+    <h1>Muswe</h1>
+    <p>
+      🥱
+    </p>
+  </div>
+  <div class="content" id="home">
+    <h1>Big-Smalls</h1>
+    <p>
+      Troublesome
+    </p>
+  </div>
+  <!-- About Section -->
+  <div class="content" id="about">
+    <h1>Tsikson</h1>
+    <p>
+      One of my Friend trying to venture in Comp Science but hard to him. He specializes mainly in Agriculture
+    </p>
+  </div>
+
+  <!-- What I Offer Section -->
+  <div class="content" id="what-i-offer">
+    <h1>Railey Mutopora</h1>
+    <p>
+      Friend from school. Blud Bros for life.
+    </p>
+  </div>
+    <!-- Contact Section -->
+  <div class="content" id="contact">
+    <h2>Bholo</h2>
+    <p>
+      Bro of mine who tries to be smart and cooler <!-- Assuming JOSEPHS.html lists platforms -->
+    </p>
+  </div>
+  <!-- Contact Section -->
+  <div class="content" id="contact">
+    <h2>Future Mistress Tech</h2>
+    <p>
+     ____________ 
+      <!-- Assuming JOSEPHS.html lists platforms -->
+    </p>
+  </div>
+  <!-- Contact Section -->
+  <div class="content" id="contact">
+    <h2>Muts</h2>
+    <p>
+      That one Businessman friend of mine
+      <!-- Assuming JOSEPHS.html lists platforms -->
+    </p>
+  </div>
+  
+  <!-- Footer Section -->
+  <footer>
+    <div class="footer-content">
+      <p>
+        &copy; 2025 Joseph Sigauke. All rights reserved.
+      </p>
+      <p>
+        Crafted with passion in Mutare, Zimbabwe.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
